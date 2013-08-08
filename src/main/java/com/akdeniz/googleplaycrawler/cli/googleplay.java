@@ -368,9 +368,10 @@ public class googleplay {
 		for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
 		    DocV2 doc = bulkDetailsEntry.getDoc();
 		    AppDetails appDetails = doc.getDetails().getAppDetails();
-		    // System.out.println(doc.getDocid());
-
-		    System.out.println(appDetails.getPackageName());
+		    System.out.println(doc.getDocid());
+		    for (String permission : appDetails.getPermissionList()) {
+				System.out.println("\t" + permission);
+		    }
 		}
 
     }
