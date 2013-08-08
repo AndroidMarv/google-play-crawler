@@ -70,7 +70,7 @@ public class googleplay {
     private Namespace namespace;
 
     public static enum COMMAND {
-	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM, RECOMMENDATIONS
+	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM, RECOMMENDATIONS, DETAILS
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
@@ -141,6 +141,11 @@ public class googleplay {
 		.description("list permissions of given application").setDefault("command", COMMAND.PERMISSIONS);
 	permissionsParser.addArgument("package").nargs("+").help("applications whose permissions to be listed");
 
+	/* =================Details Arguments============== */
+	Subparser detailsParser = subparsers.addParser("details", true)
+		.description("Details of given application").setDefault("command", COMMAND.DETAILS);
+	detailsParser.addArgument("package").nargs("+").help("applications whose permissions to be listed");
+
 	/* =================Reviews Arguments============== */
 	Subparser reviewsParser = subparsers.addParser("reviews", true)
 		.description("lists reviews of given application").setDefault("command", COMMAND.REVIEWS);
@@ -207,6 +212,9 @@ public class googleplay {
 		break;
 	    case PERMISSIONS:
 		permissionsCommand();
+		break;
+		case DETAILS:
+		detailsCommand();
 		break;
 	    case REVIEWS:
 		reviewsCommand();
@@ -348,6 +356,20 @@ public class googleplay {
 		System.out.println("\t" + permission);
 	    }
 	}
+
+    }
+
+    private void detailsCommand() throws Exception {
+		login();
+
+		List<String> packages = namespace.getList("package");
+		BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
+
+		for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
+		    DocV2 doc = bulkDetailsEntry.getDoc();
+		    AppDetails appDetails = doc.getDetails().getAppDetails();
+		    System.out.println(doc.getDocid());
+		}
 
     }
 
