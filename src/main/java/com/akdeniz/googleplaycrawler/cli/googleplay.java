@@ -368,7 +368,7 @@ public class googleplay {
 		for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
 		    DocV2 doc = bulkDetailsEntry.getDoc();
 		    AppDetails appDetails = doc.getDetails().getAppDetails();
-		    System.out.println(doc.getDocid());
+		    // System.out.println(doc.getDocid());
 
 		    System.out.println(appDetails.getPackageName());
 		}
