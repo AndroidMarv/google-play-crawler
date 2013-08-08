@@ -345,7 +345,7 @@ public class googleplay {
     private void permissionsCommand() throws Exception {
 	login();
 
-	List<String> packages = namespace.getList("package");
+	List<String> packages = namespace.getList("packagename");
 	BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
 
 	for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
@@ -362,16 +362,16 @@ public class googleplay {
     private void detailsCommand() throws Exception {
 		login();
 
-		List<String> packages = namespace.getList("package");
-		BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
+		List<String> packageNames = namespace.getList("packagename");
+		for (String packageName : packageNames) {
+		    DetailsResponse details = service.details(packageName);
+			AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+			Offer offer = details.getDocV2().getOffer(0);
 
-		for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
-		    DocV2 doc = bulkDetailsEntry.getDoc();
-		    AppDetails appDetails = doc.getDetails().getAppDetails();
-		    System.out.println(doc.getDocid());
-		    for (String permission : appDetails.getPermissionList()) {
-				System.out.println("\t" + permission);
-		    }
+			int versionCode = appDetails.getVersionCode();
+			long installationSize = appDetails.getInstallationSize();
+			int offerType = offer.getOfferType();
+			boolean checkoutRequired = offer.getCheckoutFlowRequired();
 		}
 
     }
@@ -528,11 +528,11 @@ public class googleplay {
     }
 
     private void downloadCommand() throws Exception {
-	login();
-	List<String> packageNames = namespace.getList("packagename");
-	for (String packageName : packageNames) {
-	    download(packageName);
-	}
+		login();
+		List<String> packageNames = namespace.getList("packagename");
+		for (String packageName : packageNames) {
+		    download(packageName);
+		}
     }
 
     private void checkin() throws Exception {
@@ -597,33 +597,33 @@ public class googleplay {
     }
 
     private void download(String packageName) throws IOException {
-	DetailsResponse details = service.details(packageName);
-	AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
-	Offer offer = details.getDocV2().getOffer(0);
+		DetailsResponse details = service.details(packageName);
+		AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+		Offer offer = details.getDocV2().getOffer(0);
 
-	int versionCode = appDetails.getVersionCode();
-	long installationSize = appDetails.getInstallationSize();
-	int offerType = offer.getOfferType();
-	boolean checkoutRequired = offer.getCheckoutFlowRequired();
+		int versionCode = appDetails.getVersionCode();
+		long installationSize = appDetails.getInstallationSize();
+		int offerType = offer.getOfferType();
+		boolean checkoutRequired = offer.getCheckoutFlowRequired();
 
-	// paid application...ignore
-	if (checkoutRequired) {
-	    System.out.println("Checkout required! Ignoring.." + appDetails.getPackageName());
-	    return;
-	}
+		// paid application...ignore
+		if (checkoutRequired) {
+		    System.out.println("Checkout required! Ignoring.." + appDetails.getPackageName());
+		    return;
+		}
 
-	System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
-	InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
+		System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
+		InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
 
-	FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
+		FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
 
-	byte buffer[] = new byte[1024];
-	for (int k = 0; (k = downloadStream.read(buffer)) != -1;) {
-	    outputStream.write(buffer, 0, k);
-	}
-	downloadStream.close();
-	outputStream.close();
-	System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
+		byte buffer[] = new byte[1024];
+		for (int k = 0; (k = downloadStream.read(buffer)) != -1;) {
+		    outputStream.write(buffer, 0, k);
+		}
+		downloadStream.close();
+		outputStream.close();
+		System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
     }
 
 }
