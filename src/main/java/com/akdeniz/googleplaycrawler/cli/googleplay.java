@@ -610,6 +610,9 @@ public class googleplay {
 		DetailsResponse details = service.details(packageName);
 		AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
 		Offer offer = details.getDocV2().getOffer(0);
+		System.out.println(appDetails.toString());
+		System.out.println(appDetails.getDeveloperName());
+
 
 		int versionCode = appDetails.getVersionCode();
 		long installationSize = appDetails.getInstallationSize();
