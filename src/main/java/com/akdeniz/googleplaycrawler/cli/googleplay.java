@@ -345,7 +345,7 @@ public class googleplay {
     private void permissionsCommand() throws Exception {
 	login();
 
-	List<String> packages = namespace.getList("packagename");
+	List<String> packages = namespace.getList("package");
 	BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
 
 	for (BulkDetailsEntry bulkDetailsEntry : bulkDetails.getEntryList()) {
@@ -362,17 +362,27 @@ public class googleplay {
     private void detailsCommand() throws Exception {
 		login();
 
-		List<String> packageNames = namespace.getList("packagename");
-		for (String packageName : packageNames) {
-		    DetailsResponse details = service.details(packageName);
-			AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
-			Offer offer = details.getDocV2().getOffer(0);
+		List<String> packages = namespace.getList("package");
+		for (String packageName : packages) {
+			DetailsResponse details = service.details(packageName);
+			System.out.println(details.toString());
 
-			int versionCode = appDetails.getVersionCode();
-			long installationSize = appDetails.getInstallationSize();
-			int offerType = offer.getOfferType();
-			boolean checkoutRequired = offer.getCheckoutFlowRequired();
 		}
+
+		// DetailsResponse details = service.details(packageName);
+
+		// BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
+
+		// for (String packageName : packageNames) {
+		//     DetailsResponse details = service.details(packageName);
+		// 	AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+		// 	Offer offer = details.getDocV2().getOffer(0);
+
+		// 	int versionCode = appDetails.getVersionCode();
+		// 	long installationSize = appDetails.getInstallationSize();
+		// 	int offerType = offer.getOfferType();
+		// 	boolean checkoutRequired = offer.getCheckoutFlowRequired();
+		// }
 
     }
 
