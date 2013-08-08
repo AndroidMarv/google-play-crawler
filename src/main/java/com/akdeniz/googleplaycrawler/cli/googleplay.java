@@ -179,7 +179,7 @@ public class googleplay {
 
     public static void main(String[] args) throws Exception {
 
-	new googleplay().operate(args);
+		new googleplay().operate(args);
     }
 
     public void operate(String[] argv) {
@@ -369,6 +369,8 @@ public class googleplay {
 		    DocV2 doc = bulkDetailsEntry.getDoc();
 		    AppDetails appDetails = doc.getDetails().getAppDetails();
 		    System.out.println(doc.getDocid());
+
+		    System.out.println(appDetails.getPackageName());
 		}
 
     }
