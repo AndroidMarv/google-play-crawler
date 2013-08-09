@@ -625,7 +625,9 @@ public class googleplay {
 		System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
 		InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
 
-		FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
+
+		PrintStream outputStream = new PrintStream(System.out);
+		// FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
 
 		byte buffer[] = new byte[1024];
 		for (int k = 0; (k = downloadStream.read(buffer)) != -1;) {
@@ -633,7 +635,7 @@ public class googleplay {
 		}
 		downloadStream.close();
 		outputStream.close();
-		System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
+		// System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
     }
 
 }
