@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
@@ -367,8 +365,7 @@ public class googleplay {
 		List<String> packages = namespace.getList("package");
 		for (String packageName : packages) {
 			DetailsResponse details = service.details(packageName);
-
-			System.out.println(details.toString);
+			System.out.println(details.toString());
 
 		}
 
