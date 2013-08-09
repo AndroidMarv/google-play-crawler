@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import com.google.gson.Gson;
-
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -367,11 +365,24 @@ public class googleplay {
 		List<String> packages = namespace.getList("package");
 		for (String packageName : packages) {
 			DetailsResponse details = service.details(packageName);
-
-			Gson gson = new Gson();
-			System.out.println(gson.toJson(details));
+			System.out.println(details.toString());
 
 		}
+
+		// DetailsResponse details = service.details(packageName);
+
+		// BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
+
+		// for (String packageName : packageNames) {
+		//     DetailsResponse details = service.details(packageName);
+		// 	AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+		// 	Offer offer = details.getDocV2().getOffer(0);
+
+		// 	int versionCode = appDetails.getVersionCode();
+		// 	long installationSize = appDetails.getInstallationSize();
+		// 	int offerType = offer.getOfferType();
+		// 	boolean checkoutRequired = offer.getCheckoutFlowRequired();
+		// }
 
     }
 
