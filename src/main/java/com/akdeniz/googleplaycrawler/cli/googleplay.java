@@ -365,7 +365,9 @@ public class googleplay {
 		List<String> packages = namespace.getList("package");
 		for (String packageName : packages) {
 			DetailsResponse details = service.details(packageName);
-			System.out.println(details.toString());
+
+			PrintStream out = new PrintStream(System.out, true, "UTF-8");
+			out.println(details.toString());
 
 		}
 
