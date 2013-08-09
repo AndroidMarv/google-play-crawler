@@ -371,6 +371,8 @@ public class googleplay {
 			PrintStream out = new PrintStream(System.out, true, "UTF-8");
 			out.println(details.toString());
 
+			out.println("Я звать себя Вася!!! аолруц шапцщшнапщцП4А 78ароам ывфоа8ф2ж аГЩВШР,.!%)!(;");
+
 		}
 
 		// DetailsResponse details = service.details(packageName);
