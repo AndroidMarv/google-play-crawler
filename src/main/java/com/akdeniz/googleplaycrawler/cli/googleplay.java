@@ -368,10 +368,11 @@ public class googleplay {
 		for (String packageName : packages) {
 			DetailsResponse details = service.details(packageName);
 
-			// PrintStream out = new PrintStream(System.out, true, "UTF-8");
+			PrintStream out = new PrintStream(System.out, true, "UTF-8");
 			// out.println(details.toString());
 
 			out.println("Я звать себя Вася!!! аолруц шапцщшнапщцП4А 78ароам ывфоа8ф2ж аГЩВШР,.!%)!(;");
+			System.out.println("Я звать себя Вася!!! аолруц шапцщшнапщцП4А 78ароам ывфоа8ф2ж аГЩВШР,.!%)!(;");
 
 		}
 
