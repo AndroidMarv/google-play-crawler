@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
