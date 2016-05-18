@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +71,7 @@ public class googleplay {
     private Namespace namespace;
 
     public static enum COMMAND {
-	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM, RECOMMENDATIONS
+	LIST, DOWNLOAD, CHECKIN, CATEGORIES, SEARCH, PERMISSIONS, REVIEWS, REGISTER, USEGCM, RECOMMENDATIONS, DETAILS
     }
 
     private static final String LIST_HEADER = new StringJoiner(DELIMETER).add("Title").add("Package").add("Creator")
@@ -141,6 +142,11 @@ public class googleplay {
 		.description("list permissions of given application").setDefault("command", COMMAND.PERMISSIONS);
 	permissionsParser.addArgument("package").nargs("+").help("applications whose permissions to be listed");
 
+	/* =================Details Arguments============== */
+	Subparser detailsParser = subparsers.addParser("details", true)
+		.description("Details of given application").setDefault("command", COMMAND.DETAILS);
+	detailsParser.addArgument("package").nargs("+").help("applications whose permissions to be listed");
+
 	/* =================Reviews Arguments============== */
 	Subparser reviewsParser = subparsers.addParser("reviews", true)
 		.description("lists reviews of given application").setDefault("command", COMMAND.REVIEWS);
@@ -174,7 +180,7 @@ public class googleplay {
 
     public static void main(String[] args) throws Exception {
 
-	new googleplay().operate(args);
+		new googleplay().operate(args);
     }
 
     public void operate(String[] argv) {
@@ -207,6 +213,9 @@ public class googleplay {
 		break;
 	    case PERMISSIONS:
 		permissionsCommand();
+		break;
+		case DETAILS:
+		detailsCommand();
 		break;
 	    case REVIEWS:
 		reviewsCommand();
@@ -348,6 +357,33 @@ public class googleplay {
 		System.out.println("\t" + permission);
 	    }
 	}
+
+    }
+
+    private void detailsCommand() throws Exception {
+		login();
+
+		List<String> packages = namespace.getList("package");
+		for (String packageName : packages) {
+			DetailsResponse details = service.details(packageName);
+			System.out.println(details.toString());
+
+		}
+
+		// DetailsResponse details = service.details(packageName);
+
+		// BulkDetailsResponse bulkDetails = service.bulkDetails(packages);
+
+		// for (String packageName : packageNames) {
+		//     DetailsResponse details = service.details(packageName);
+		// 	AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+		// 	Offer offer = details.getDocV2().getOffer(0);
+
+		// 	int versionCode = appDetails.getVersionCode();
+		// 	long installationSize = appDetails.getInstallationSize();
+		// 	int offerType = offer.getOfferType();
+		// 	boolean checkoutRequired = offer.getCheckoutFlowRequired();
+		// }
 
     }
 
@@ -503,11 +539,11 @@ public class googleplay {
     }
 
     private void downloadCommand() throws Exception {
-	login();
-	List<String> packageNames = namespace.getList("packagename");
-	for (String packageName : packageNames) {
-	    download(packageName);
-	}
+		login();
+		List<String> packageNames = namespace.getList("packagename");
+		for (String packageName : packageNames) {
+		    download(packageName);
+		}
     }
 
     private void checkin() throws Exception {
@@ -572,33 +608,34 @@ public class googleplay {
     }
 
     private void download(String packageName) throws IOException {
-	DetailsResponse details = service.details(packageName);
-	AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
-	Offer offer = details.getDocV2().getOffer(0);
+		DetailsResponse details = service.details(packageName);
+		AppDetails appDetails = details.getDocV2().getDetails().getAppDetails();
+		Offer offer = details.getDocV2().getOffer(0);
 
-	int versionCode = appDetails.getVersionCode();
-	long installationSize = appDetails.getInstallationSize();
-	int offerType = offer.getOfferType();
-	boolean checkoutRequired = offer.getCheckoutFlowRequired();
+		int versionCode = appDetails.getVersionCode();
+		long installationSize = appDetails.getInstallationSize();
+		int offerType = offer.getOfferType();
+		boolean checkoutRequired = offer.getCheckoutFlowRequired();
 
-	// paid application...ignore
-	if (checkoutRequired) {
-	    System.out.println("Checkout required! Ignoring.." + appDetails.getPackageName());
-	    return;
-	}
+		// paid application...ignore
+		if (checkoutRequired) {
+		    System.out.println("Checkout required! Ignoring.." + appDetails.getPackageName());
+		    return;
+		}
 
-	System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
-	InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
+		System.out.println("Downloading..." + appDetails.getPackageName() + " : " + installationSize + " bytes");
+		InputStream downloadStream = service.download(appDetails.getPackageName(), versionCode, offerType);
 
-	FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
+		// PrintStream outputStream = new PrintStream(System.out);
+		FileOutputStream outputStream = new FileOutputStream(appDetails.getPackageName() + ".apk");
 
-	byte buffer[] = new byte[1024];
-	for (int k = 0; (k = downloadStream.read(buffer)) != -1;) {
-	    outputStream.write(buffer, 0, k);
-	}
-	downloadStream.close();
-	outputStream.close();
-	System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
+		byte buffer[] = new byte[1024];
+		for (int k = 0; (k = downloadStream.read(buffer)) != -1;) {
+		    outputStream.write(buffer, 0, k);
+		}
+		downloadStream.close();
+		outputStream.close();
+		System.out.println("Downloaded! " + appDetails.getPackageName() + ".apk");
     }
 
 }
